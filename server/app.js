@@ -8,6 +8,7 @@ import authRoutes from "./routes/authRoute.js";
 import userRoutes from "./routes/userRoute.js";
 import './cron/sendReminders.js';
 import './cron/sendEmailUser.js';
+import db from './models/index.js'; // Import database models
 
 dotenv.config();
 const app = express();
@@ -24,5 +25,14 @@ app.use('/api', routes);
 // Routes registration user
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+
+// Database synchronization
+db.sequelize.sync({ force: false, alter: true }) // force: false prevents dropping tables, alter: true updates schema
+  .then(() => {
+    console.log('Database synchronized successfully.');
+  })
+  .catch((error) => {
+    console.error('Error synchronizing database:', error);
+  });
 
 export default app;
