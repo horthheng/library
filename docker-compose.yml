@@ -1,11 +1,8 @@
-version: "3.8"
-
 services:
   server:
     build:
       context: ./server
-      dockerfile: Dockerfile
-    image: library-management-backend:latest
+    image: 123456789012.dkr.ecr.ap-southeast-1.amazonaws.com/library-backend:latest
     ports:
       - "3000:3000"
     env_file:
@@ -26,7 +23,7 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-    image: library-management-frontend:latest
+    image: 123456789012.dkr.ecr.ap-southeast-1.amazonaws.com/library-frontend:latest
     ports:
       - "8080:80"
     env_file:
