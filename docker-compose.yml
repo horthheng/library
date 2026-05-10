@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: library-management-backend:latest
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./server/.env
+    volumes:
+      - ./server/uploads:/app/uploads
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - library-network
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: library-management-frontend:latest
+    ports:
+      - "8080:80"
+    env_file:
+      - ./client/.env
+    depends_on:
+      - server
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - library-network
+
+networks:
+  library-network:
+    driver: bridge
